@@ -2070,3 +2070,117 @@ select {
     gap: 3px;
   }
 }
+
+/* ============================================================
+   KuruBets — облачная авторизация
+   ============================================================ */
+
+.cloud-auth {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.cloud-auth[hidden] {
+  display: none;
+}
+
+.cloud-auth-card {
+  width: min(440px, 100%);
+  padding: 28px;
+  border: 1px solid var(--line, rgba(255,255,255,.08));
+  border-radius: 20px;
+  background: var(--card, #17191f);
+  box-shadow: 0 25px 80px rgba(0,0,0,.45);
+}
+
+.cloud-auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.cloud-auth-logo .logo {
+  flex: 0 0 auto;
+}
+
+.cloud-auth-card h2 {
+  margin: 0 0 8px;
+}
+
+.cloud-auth-card p {
+  margin: 0 0 22px;
+  color: var(--muted, #8f96a3);
+  line-height: 1.5;
+}
+
+.cloud-auth-card label {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.cloud-auth-card label span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--muted, #8f96a3);
+}
+
+.cloud-auth-card input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cloud-auth-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.cloud-auth-offline {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted, #8f96a3);
+  cursor: pointer;
+}
+
+.cloud-auth-offline:hover {
+  color: inherit;
+}
+
+.cloud-auth-message {
+  min-height: 20px;
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.cloud-auth-message.ok {
+  color: #64d48b;
+}
+
+.cloud-auth-message.error {
+  color: #ff7474;
+}
+
+@media (max-width: 520px) {
+  .cloud-auth-card {
+    padding: 22px;
+  }
+
+  .cloud-auth-actions {
+    grid-template-columns: 1fr;
+  }
+}
