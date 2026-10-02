@@ -2184,3 +2184,576 @@ select {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   KuruBets — мобильная версия
+   ============================================================ */
+
+@media (max-width: 560px) {
+
+  html {
+    scrollbar-gutter: auto;
+    overflow-x: hidden;
+  }
+
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ---------- ШАПКА ---------- */
+
+  .topbar {
+    width: 100%;
+    padding:
+      max(8px, env(safe-area-inset-top))
+      10px
+      10px;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .menu-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand {
+    gap: 7px;
+    font-size: 17px;
+    min-width: 0;
+  }
+
+  .brand .logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .brand span:last-child {
+    display: none;
+  }
+
+  .topbar-actions {
+    order: 3;
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 38px auto;
+    grid-template-rows: auto auto;
+    gap: 7px;
+  }
+
+  .top-bank-wrap {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-radius: 12px;
+  }
+
+  .top-bank-item {
+    min-width: 0;
+    padding: 7px 4px;
+  }
+
+  .top-bank-label {
+    font-size: 8px;
+    letter-spacing: .04em;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .top-bank-item strong {
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  #themeBtn {
+    grid-column: 2;
+    grid-row: 2;
+    width: 38px;
+    height: 38px;
+  }
+
+  #addBetBtn {
+    grid-column: 3;
+    grid-row: 2;
+    min-height: 38px;
+    padding: 8px 12px;
+  }
+
+  /* ---------- ОСНОВНАЯ ОБЛАСТЬ ---------- */
+
+  .main {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 10px 28px;
+    overflow-x: hidden;
+  }
+
+  .page-head {
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .page-sub {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .range-chips {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .range-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .range-chips .chip {
+    flex: 0 0 auto;
+  }
+
+  /* ---------- KPI ---------- */
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .kpi {
+    min-width: 0;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .kpi-label {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .kpi-value {
+    font-size: 18px;
+  }
+
+  .kpi-foot {
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  /* ---------- КАРТОЧКИ ---------- */
+
+  .card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .section-title {
+    margin: 20px 0 9px;
+    font-size: 11px;
+  }
+
+  /* ---------- ГРАФИК ---------- */
+
+  .chart-card {
+    padding: 10px 5px 5px;
+  }
+
+  .chart-box {
+    height: 210px;
+    min-height: 210px;
+  }
+
+  .chart-legend {
+    padding: 0 6px 5px;
+    font-size: 10px;
+  }
+
+  /* ---------- ФИЛЬТРЫ ---------- */
+
+  .filters {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .filters .field,
+  .filters .field-sm {
+    width: 100%;
+    max-width: none;
+  }
+
+  .reset-btn {
+    width: 100%;
+  }
+
+  .field-inline {
+    width: 100%;
+  }
+
+  .field-inline select {
+    min-width: 0;
+  }
+
+  /* ---------- ПОЛЯ ---------- */
+
+  input,
+  select,
+  textarea {
+    min-height: 42px;
+    padding: 10px 11px;
+    font-size: 14px;
+  }
+
+  .btn {
+    min-height: 42px;
+  }
+
+  .btn-sm {
+    min-height: 38px;
+  }
+
+  .icon-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  /* ---------- ТАБЛИЦЫ ---------- */
+
+  .table-card {
+    border-radius: 12px;
+  }
+
+  .table-toolbar {
+    padding: 10px;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 720px;
+    font-size: 12.5px;
+  }
+
+  .table th {
+    padding: 9px 10px;
+    font-size: 9px;
+  }
+
+  .table td {
+    padding: 9px 10px;
+  }
+
+  /* На телефоне таблицу скроллим внутри карточки,
+     а не всей страницей */
+
+  .table-wrap::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .table-wrap::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 99px;
+  }
+
+  /* ---------- МАТЧИ ---------- */
+
+  .match-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .match {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .match-teams {
+    font-size: 14px;
+  }
+
+  .odds-row {
+    gap: 6px;
+  }
+
+  .odd {
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ---------- ФОРМА СТАВКИ ---------- */
+
+  .modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card,
+  .modal-lg {
+    width: 100%;
+    max-width: 100%;
+    max-height: 94vh;
+    border-radius: 18px 18px 0 0;
+    margin: 0;
+  }
+
+  .modal-head {
+    padding: 12px 14px;
+  }
+
+  .modal-body {
+    padding: 12px;
+  }
+
+  .modal-foot {
+    position: sticky;
+    bottom: 0;
+    margin-top: 12px;
+    padding-top: 10px;
+    background: var(--surface);
+    z-index: 3;
+  }
+
+  .bet-form-section {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+  }
+
+  .bet-form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .bet-field-wide {
+    grid-column: auto;
+  }
+
+  .bet-teams {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .bet-team-separator {
+    display: none;
+  }
+
+  .quick-stakes {
+    gap: 6px;
+  }
+
+  .quick-stakes .chip {
+    min-height: 38px;
+    min-width: 50px;
+  }
+
+  /* ---------- ГОЛЫ 5×5 ---------- */
+
+  .goal-form {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .goal-form .field,
+  .goal-form .field-sm {
+    width: 100%;
+    max-width: none;
+  }
+
+  .pf-form {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .fc-markets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .fc-market {
+    padding: 9px;
+  }
+
+  .fc-market-label {
+    font-size: 9px;
+  }
+
+  .fc-market-value {
+    font-size: 15px;
+  }
+
+  .pf-matrix {
+    min-width: 430px;
+  }
+
+  /* ---------- H2H ---------- */
+
+  .h2h {
+    padding: 9px;
+  }
+
+  .h2h-head {
+    gap: 4px;
+  }
+
+  .h2h-team {
+    font-size: 11.5px;
+  }
+
+  .h2h-stat {
+    padding: 6px 2px;
+  }
+
+  .h2h-stat strong {
+    font-size: 13px;
+  }
+
+  .h2h-row {
+    grid-template-columns: 74px 1fr 50px 20px;
+    gap: 5px;
+    font-size: 11.5px;
+  }
+
+  /* ---------- БЫСТРЫЕ РЕЗУЛЬТАТЫ ---------- */
+
+  .quick-status-cell {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .quick-status {
+    gap: 3px;
+  }
+
+  .quick-status-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+  }
+
+  /* ---------- FOOTER ---------- */
+
+  .foot {
+    padding: 12px 10px;
+    gap: 8px;
+    font-size: 11.5px;
+  }
+
+  .foot-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  /* ---------- ОБЛАЧНАЯ АВТОРИЗАЦИЯ ---------- */
+
+  .cloud-auth {
+    padding: 10px;
+  }
+
+  .cloud-auth-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .cloud-auth-card h2 {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .cloud-auth-card p {
+    font-size: 13px;
+  }
+
+  .cloud-auth-actions {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* ---------- УБИРАЕМ ГОРИЗОНТАЛЬНЫЙ РАСПОР ---------- */
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+
+  .page,
+  .card,
+  .section-title,
+  .notice,
+  .grid-2,
+  .kpi-grid {
+    max-width: 100%;
+  }
+}
+
+/* ---------- Очень маленькие телефоны ---------- */
+
+@media (max-width: 380px) {
+
+  .top-bank-label {
+    font-size: 7px;
+  }
+
+  .top-bank-item strong {
+    font-size: 10px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kpi-value {
+    font-size: 17px;
+  }
+
+  .fc-markets {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .foot-right {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
