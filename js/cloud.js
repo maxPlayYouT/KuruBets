@@ -176,7 +176,7 @@
         );
       } catch (error) {}
 
-      K.rerender();
+      window.KuruApp.rerender();
 
       return true;
     }
@@ -237,7 +237,7 @@
             );
           } catch (error) {}
 
-          K.rerender();
+          window.KuruApp.rerender();
         }
       )
       .subscribe();
