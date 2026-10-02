@@ -2758,41 +2758,68 @@ select {
   }
 }
 
+/* ---------- Нормальное мобильное меню ---------- */
+
 @media (max-width: 560px) {
+
+  html,
+  body {
+    overflow-x: clip;
+  }
 
   .topbar {
     position: sticky;
     z-index: 40;
+    overflow: visible;
   }
 
   .menu-btn {
+    display: inline-flex;
     position: relative;
-    z-index: 102;
+    z-index: 42;
   }
 
   .main-nav {
-    top: 0;
-    left: 0;
-    bottom: 0;
+    position: absolute;
 
-    width: min(290px, 84vw);
-    max-width: 290px;
+    top: calc(100% + 8px);
+    left: 8px;
 
-    padding: 82px 14px 20px;
+    width: min(250px, calc(100vw - 16px));
+    max-height: calc(100dvh - 120px);
 
-    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    margin: 0;
+    padding: 10px;
 
     background: var(--surface);
-    border-right: 1px solid var(--border);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
 
     overflow-y: auto;
     overflow-x: hidden;
 
-    transform: translateX(-105%);
+    transform: translateX(calc(-100% - 20px));
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+      transform .2s ease,
+      opacity .2s ease,
+      visibility .2s ease;
+
+    z-index: 41;
   }
 
   .main-nav.open {
     transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
   }
 
   .main-nav a {
@@ -2800,43 +2827,22 @@ select {
     align-items: center;
 
     width: 100%;
-    min-height: 46px;
+    min-height: 44px;
 
-    padding: 11px 14px;
-    margin: 0;
+    padding: 10px 13px;
 
     border-radius: 10px;
 
     font-size: 15px;
     white-space: nowrap;
   }
-}
 
-.hamburger,
-.hamburger::before,
-.hamburger::after {
-  display: block;
-  width: 18px;
-  height: 2px;
-  border-radius: 2px;
-  background: currentColor;
-}
+  .main-nav a.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
 
-.hamburger {
-  position: relative;
-}
-
-.hamburger::before,
-.hamburger::after {
-  content: "";
-  position: absolute;
-  left: 0;
-}
-
-.hamburger::before {
-  top: -6px;
-}
-
-.hamburger::after {
-  top: 6px;
+  .main-nav a:hover {
+    background: var(--surface-2);
+  }
 }
