@@ -2728,83 +2728,144 @@ select {
   }
 }
 
-/* ---------- Очень маленькие телефоны ---------- */
-
-@media (max-width: 380px) {
-
-  .top-bank-label {
-    font-size: 7px;
-  }
-
-  .top-bank-item strong {
-    font-size: 10px;
-  }
-
-  .kpi-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .kpi-value {
-    font-size: 17px;
-  }
-
-  .fc-markets {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .foot-right {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* ---------- Нормальное мобильное меню ---------- */
+/* ---------- Финальная мобильная шапка ---------- */
 
 @media (max-width: 560px) {
 
-  html,
-  body {
-    overflow-x: clip;
-  }
-
   .topbar {
     position: sticky;
+    top: 0;
     z-index: 40;
+
+    display: grid;
+    grid-template-columns: 40px 1fr auto auto;
+    grid-template-rows: auto auto;
+
+    gap: 8px;
+
+    padding: 10px;
     overflow: visible;
   }
 
+  /* меню */
   .menu-btn {
     display: inline-flex;
-    position: relative;
-    z-index: 42;
+    grid-column: 1;
+    grid-row: 1;
+
+    width: 40px;
+    height: 40px;
+
+    font-size: 23px;
+    line-height: 1;
   }
 
+  /* логотип */
+  .brand {
+    grid-column: 2;
+    grid-row: 1;
+
+    min-width: 0;
+    gap: 0;
+  }
+
+  .brand .logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .brand span:last-child {
+    display: none;
+  }
+
+  /* тема */
+  #themeBtn {
+    grid-column: 3;
+    grid-row: 1;
+
+    width: 40px;
+    height: 40px;
+  }
+
+  /* ставка */
+  #addBetBtn {
+    grid-column: 4;
+    grid-row: 1;
+
+    min-height: 40px;
+    padding: 8px 12px;
+  }
+
+  /* банк — отдельная строка */
+  .topbar-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+
+    width: 100%;
+    margin: 0;
+
+    display: block;
+  }
+
+  .top-bank-wrap {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    border-radius: 12px;
+  }
+
+  .top-bank-item {
+    min-width: 0;
+    padding: 7px 4px;
+  }
+
+  .top-bank-label {
+    font-size: 8px;
+    line-height: 1.15;
+    letter-spacing: .04em;
+
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .top-bank-item strong {
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  /* мобильное меню */
   .main-nav {
     position: absolute;
 
     top: calc(100% + 8px);
-    left: 8px;
+    left: 10px;
 
-    width: min(250px, calc(100vw - 16px));
-    max-height: calc(100dvh - 120px);
+    width: 250px;
+    max-width: calc(100vw - 20px);
 
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 
     margin: 0;
-    padding: 10px;
+    padding: 9px;
 
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 14px;
 
-    box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
 
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
 
-    transform: translateX(calc(-100% - 20px));
+    transform: translateX(-120%);
     opacity: 0;
     visibility: hidden;
 
@@ -2826,12 +2887,10 @@ select {
     display: flex;
     align-items: center;
 
-    width: 100%;
     min-height: 44px;
-
     padding: 10px 13px;
 
-    border-radius: 10px;
+    border-radius: 9px;
 
     font-size: 15px;
     white-space: nowrap;
@@ -2842,7 +2901,8 @@ select {
     color: var(--accent);
   }
 
-  .main-nav a:hover {
-    background: var(--surface-2);
+  /* контент сразу под шапкой */
+  .main {
+    padding-top: 12px;
   }
 }
