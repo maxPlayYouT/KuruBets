@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="KuruBets — дневник ставок: фиксация пари, движение банка, статистика по видам спорта и коэффициентам."
+    />
+    <title>KuruBets — дневник ставок</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff7a45'/%3E%3C/svg%3E"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#0f1115" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="KuruBets" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <script>document.documentElement.className += ' js';</script>
+    <header class="topbar">
+      <button
+        class="icon-btn menu-btn"
+        id="menuBtn"
+        type="button"
+        aria-label="Меню"
+      >
+        ≡
+      </button>
+      <a class="brand" href="#/">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Kuru<b>Bets</b></span>
+      </a>
+      <nav class="main-nav" id="mainNav">
+        <a href="#/" data-route="/">Обзор</a>
+        <a href="#/bets" data-route="/bets">Мои ставки</a>
+        <a href="#/analytics" data-route="/analytics">Аналитика</a>
+        <a href="#/goals" data-route="/goals">Голы 5×5</a>
+      </nav>
+      <div class="topbar-actions">
+        <div class="top-bank-wrap">
+          <span class="top-bank-item">
+            <span class="top-bank-label">Банк</span>
+            <strong id="topBank">0 ₽</strong>
+          </span>
+
+          <span class="top-bank-item">
+            <span class="top-bank-label">В игре</span>
+            <strong id="topInPlay">0 ₽</strong>
+          </span>
+
+          <span class="top-bank-item">
+            <span class="top-bank-label">После выигрыша</span>
+            <strong id="topPotentialBank">0 ₽</strong>
+          </span>
+        </div>
+        <button
+          class="icon-btn"
+          id="themeBtn"
+          type="button"
+          title="Сменить тему"
+        >
+          ◐
+        </button>
+        <button class="btn btn-primary btn-sm" id="addBetBtn" type="button">
+          + Ставка
+        </button>
+      </div>
+    </header>
+
+    <div class="scrim" id="scrim"></div>
+
+    <main class="main">
+      <!-- ============ ОБЗОР ============ -->
+      <section class="page" data-page="/">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Обзор</h1>
+            <p class="page-sub">Сводка по дневнику за выбранный период</p>
+          </div>
+          <div class="range-chips" id="rangeChips">
+            <button class="chip" data-days="7" type="button">7 дней</button>
+            <button class="chip" data-days="30" type="button">30 дней</button>
+            <button class="chip" data-days="90" type="button">90 дней</button>
+            <button class="chip" data-days="0" type="button">Всё время</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <span class="kpi-label">Прибыль, ₽</span
+            ><strong class="kpi-value" id="kpiProfit">0</strong
+            ><span class="kpi-foot" id="kpiProfitFoot">—</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Рентабельность</span
+            ><strong class="kpi-value" id="kpiRoi">0%</strong
+            ><span class="kpi-foot">на оборот, %</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Проходимость</span
+            ><strong class="kpi-value" id="kpiStrike">0%</strong
+            ><span class="kpi-foot" id="kpiStrikeFoot">—</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Средний коэффициент</span
+            ><strong class="kpi-value" id="kpiAvgOdds">0.00</strong
+            ><span class="kpi-foot">по рассчитанным</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Оборот, ₽</span
+            ><strong class="kpi-value" id="kpiTurnover">0</strong
+            ><span class="kpi-foot">сумма ставок</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Макс. просадка</span
+            ><strong class="kpi-value" id="kpiDrawdown">0%</strong
+            ><span class="kpi-foot">от пика банка</span>
+          </div>
+        </div>
+
+        <div class="section-title">Движение банка</div>
+        <div class="card chart-card">
+          <div class="chart-legend">
+            <span class="lg" id="chartRangeLabel"></span>
+          </div>
+          <div class="chart-box" id="chartBox"></div>
+          <div class="chart-empty" id="chartEmpty" hidden>
+            Нет ставок за выбранный период
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <div class="section-title">Последние ставки</div>
+            <div class="card" id="recentBox"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ СТАВКИ ============ -->
+      <section class="page" data-page="/bets">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Мои ставки</h1>
+            <p class="page-sub">История пари, расчёты и фильтры</p>
+          </div>
+          <div class="page-actions">
+            <button
+              class="btn btn-primary btn-sm"
+              id="addBetBtn2"
+              type="button"
+            >
+              + Добавить ставку
+            </button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <label class="field"
+            ><span>Поиск</span>
+            <input
+              id="fltSearch"
+              type="text"
+              placeholder="матч, команда, тип"
+            />
+          </label>
+          <label class="field"
+            ><span>Вид спорта</span
+            ><select id="fltSport">
+              <option value="">Все</option>
+            </select></label
+          >
+          <label class="field"
+            ><span>Результат</span>
+            <select id="fltStatus">
+              <option value="">Любой</option>
+              <option value="pending">Не рассчитана</option>
+              <option value="won">Выигрыш</option>
+              <option value="lost">Проигрыш</option>
+              <option value="push">Возврат</option>
+            </select>
+          </label>
+          <label class="field"
+            ><span>С</span><input id="fltFrom" type="date"
+          /></label>
+          <label class="field"
+            ><span>По</span><input id="fltTo" type="date"
+          /></label>
+          <label class="field field-sm"
+            ><span>Мин. кэф</span
+            ><input
+              id="fltOddsMin"
+              type="number"
+              step="0.01"
+              min="1"
+              placeholder="1.00"
+          /></label>
+          <label class="field field-sm"
+            ><span>Макс. кэф</span
+            ><input
+              id="fltOddsMax"
+              type="number"
+              step="0.01"
+              min="1"
+              placeholder="50.00"
+          /></label>
+          <button class="btn btn-sm reset-btn" id="fltReset" type="button">
+            Сбросить
+          </button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-toolbar">
+            <strong id="betsCount">0 ставок</strong>
+            <div class="sort-group">
+              <label class="field field-inline"
+                ><span>Сортировка</span>
+                <select id="fltSort">
+                  <option value="date-desc">Сначала новые</option>
+                  <option value="date-asc">Сначала старые</option>
+                  <option value="stake-desc">Ставка ↓</option>
+                  <option value="odds-desc">Коэффициент ↓</option>
+                  <option value="profit-desc">Прибыль ↓</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Матч</th>
+                  <th>Рынок</th>
+                  <th class="num">Кэф</th>
+                  <th class="num">Ставка</th>
+                  <th class="num">Прибыль</th>
+                  <th>Статус</th>
+                  <th class="quick-head"></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="betsBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="betsEmpty" hidden>
+            Ставок нет. Добавьте первую.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ АНАЛИТИКА ============ -->
+      <section class="page" data-page="/analytics">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Аналитика</h1>
+            <p class="page-sub">
+              Где ставка заходит стабильно, а где сливает банк
+            </p>
+          </div>
+          <div class="page-actions">
+            <span class="muted" id="analyticsNote"></span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <h3>По видам спорта</h3>
+              <span class="muted">ROI и прибыль</span>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Спорт</th>
+                    <th class="num">Ставок</th>
+                    <th class="num">% захода</th>
+                    <th class="num">Оборот</th>
+                    <th class="num">Прибыль</th>
+                    <th class="num">ROI</th>
+                  </tr>
+                </thead>
+                <tbody id="bySportBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3>По типу ставки</h3>
+              <span class="muted">исход, фора, тотал, экспресс</span>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Тип</th>
+                    <th class="num">Ставок</th>
+                    <th class="num">% захода</th>
+                    <th class="num">Оборот</th>
+                    <th class="num">Прибыль</th>
+                    <th class="num">ROI</th>
+                  </tr>
+                </thead>
+                <tbody id="byTypeBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3>По диапазону коэффициентов</h3>
+              <span class="muted">ожидаемая ценность</span>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Диапазон</th>
+                    <th class="num">Ставок</th>
+                    <th class="num">% захода</th>
+                    <th class="num">Оборот</th>
+                    <th class="num">Прибыль</th>
+                    <th class="num">ROI</th>
+                  </tr>
+                </thead>
+                <tbody id="byOddsBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3>По дням недели</h3>
+              <span class="muted">когда вы играете в плюс</span>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>День</th>
+                    <th class="num">Ставок</th>
+                    <th class="num">% захода</th>
+                    <th class="num">Оборот</th>
+                    <th class="num">Прибыль</th>
+                    <th class="num">ROI</th>
+                  </tr>
+                </thead>
+                <tbody id="byWeekdayBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Серии и рекорды</div>
+        <div class="card"><div class="stat-grid" id="streakBox"></div></div>
+
+        <div class="section-title">Дисциплина</div>
+        <div class="card"><div class="stat-grid" id="disciplineBox"></div></div>
+      </section>
+
+      <!-- ============ ГОЛЫ 5×5 ============ -->
+      <section class="page" data-page="/goals">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Голы 5×5</h1>
+            <p class="page-sub">
+              Вписываете сыгранные матчи и счёт — считает среднее голов за игру по
+              каждой команде (начиная со 2-й игры) и строит прогноз на новую пару:
+              счёт 5×5, исход и тоталы
+            </p>
+          </div>
+          <div class="page-actions"><span class="muted" id="goalsNote"></span></div>
+        </div>
+
+        <div class="notice" id="goalsNotice" hidden></div>
+
+        <div class="section-title">Ввод матчей</div>
+        <div class="card">
+          <form class="goal-form" id="goalForm" autocomplete="off">
+            <label class="field"
+              ><span>Дата</span><input id="gfDate" type="date"
+            /></label>
+            <label class="field"
+              ><span>Команда 1</span>
+              <input
+                id="gfTeamA"
+                type="text"
+                maxlength="40"
+                list="goalTeamList"
+                placeholder="Барсы"
+              />
+            </label>
+            <label class="field field-sm"
+              ><span>Голы 1</span
+              ><input
+                id="gfGoalsA"
+                type="number"
+                min="0"
+                max="30"
+                step="1"
+                placeholder="3"
+              />
+            </label>
+            <label class="field field-sm"
+              ><span>Голы 2</span
+              ><input
+                id="gfGoalsB"
+                type="number"
+                min="0"
+                max="30"
+                step="1"
+                placeholder="1"
+              />
+            </label>
+            <label class="field"
+              ><span>Команда 2</span>
+              <input
+                id="gfTeamB"
+                type="text"
+                maxlength="40"
+                list="goalTeamList"
+                placeholder="Дружина"
+              />
+            </label>
+            <label class="field"
+            ><span>Лига</span>
+            <input
+              id="gfLeague"
+              type="text"
+              maxlength="30"
+              list="leagueList"
+              placeholder="Лига 1"
+            />
+          </label>
+
+          <datalist id="goalTeamList"></datalist>
+          <datalist id="leagueList"></datalist>
+            <button class="btn btn-primary" type="submit">Добавить матч</button>
+          </form>
+          <p class="hint">
+            Команда 1 — домашняя: по ней ведётся статистика «дома», по второй — «в
+            гостях». Пишите названия одинаково: «Барсы» и «Барсы Мск» — это две
+            разные команды.
+          </p>
+        </div>
+
+        <div class="section-title">Сыгранные матчи</div>
+        <div class="card table-card">
+          <div class="table-toolbar">
+            <strong id="goalCount">0 матчей</strong>
+            <label class="field field-inline"
+              ><span>Лига</span>
+              <select id="g5LeagueFilter">
+                <option value="">Все лиги</option>
+              </select>
+            </label>
+            <span class="muted">среднее голов — со 2-й игры по команде</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Лига</th>
+                  <th>Команда 1</th>
+                  <th class="num">Голы</th>
+                  <th>Команда 2</th>
+                  <th class="num">Голы</th>
+                  <th class="num">Ср. 1.</th>
+                  <th class="num">Ср. 2.</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="goalGamesBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="goalGamesEmpty" hidden>
+            Матчей нет. Добавьте первый в форме выше или нажмите «Заполнить
+            примером».
+          </div>
+        </div>
+
+        <div class="section-title">Среднее голов за игру по командам</div>
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Команда</th>
+                  <th class="num">Игр</th>
+                  <th class="num">Забито</th>
+                  <th class="num">Ср. забитых</th>
+                  <th class="num">Пропущено</th>
+                  <th class="num">Ср. пропущ.</th>
+                  <th class="num">Прогноз гола</th>
+                </tr>
+              </thead>
+              <tbody id="goalTeamsBody"></tbody>
+            </table>
+          </div>
+          <p class="foot-note">
+            «Ср. забитых» — голы команды на число сыгранных ею матчей; пока игр
+            меньше двух, цифру не показываем. «Прогноз гола» — среднее между
+            атакой команды и тем, сколько пропускают её соперники: ожидаемые голы
+            в следующем матче.
+          </p>
+        </div>
+
+        <div class="section-title">Прогноз на пару</div>
+        <div class="card">
+          <div class="pf-form">
+            <label class="field"
+              ><span>Команда 1</span><select id="pfTeamA"></select
+            ></label>
+            <label class="field"
+              ><span>Команда 2</span><select id="pfTeamB"></select
+            ></label>
+            <label class="field field-sm"
+              ><span>Линия тотала</span>
+              <select id="pfLine">
+                <option value="0.5">0.5</option>
+                <option value="1.5">1.5</option>
+                <option value="2.5" selected>2.5</option>
+                <option value="3.5">3.5</option>
+                <option value="4.5">4.5</option>
+                <option value="5.5">5.5</option>
+                <option value="6.5">6.5</option>
+                <option value="7.5">7.5</option>
+                <option value="8.5">8.5</option>
+                <option value="9.5">9.5</option>
+                <option value="10.5">10.5</option>
+                <option value="11.5">11.5</option>
+              </select>
+            </label>
+          </div>
+          <div class="pf-body" id="pfBody"></div>
+        </div>
+
+        <div class="section-title">Точный счёт 5×5</div>
+        <div class="card table-card">
+          <div class="table-toolbar">
+            <strong>Вероятность счёта, %</strong>
+            <span class="muted" id="pfMatrixNote"
+              >строки — голы команды 1, столбцы — команды 2</span
+            >
+          </div>
+          <div class="table-wrap">
+            <table class="table pf-matrix">
+              <thead id="pfMatrixHead"></thead>
+              <tbody id="pfMatrixBody"></tbody>
+            </table>
+          </div>
+          <p class="foot-note">
+            Модель — распределение Пуассона по среднему голов команд с поправкой
+            на последние 5 матчей. Это прикидка вероятностей, а не гарантия: при
+            выборке 2–4 игры доверять ей можно только как подсказке.
+          </p>
+        </div>
+
+        <div class="section-title">Матрица фактических голов 5×5</div>
+        <div class="card table-card" id="g5Card" hidden>
+          <div class="table-toolbar">
+            <strong>Сыгранные матчи, %</strong>
+            <span class="muted" id="g5Note"></span>
+          </div>
+          <div class="table-wrap">
+            <table class="table pf-matrix">
+              <thead id="g5Head"></thead>
+              <tbody id="g5Body"></tbody>
+            </table>
+          </div>
+          <p class="hint">
+            Строки — сколько забила команда, столбцы — сколько пропустила. Если
+            команды уже играли между собой, показан счёт их личных встреч; иначе
+            — две матрицы по каждой команде отдельно. Чем темнее ячейка, тем чаще
+            такая пара голов.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ МОДАЛЬНЫЕ ОКНА ============ -->
+    <div class="modal" id="betModal">
+      <div class="modal-card modal-lg">
+        <div class="modal-head">
+          <h3 id="betModalTitle">Новая ставка</h3>
+          <button
+            class="icon-btn"
+            data-close-modal
+            type="button"
+            aria-label="Закрыть"
+          >
+            ✕
+          </button>
+        </div>
+        <form class="modal-body" id="betForm">
+          <input type="hidden" id="betId" />
+          <input type="hidden" id="inMatch" />
+          <input type="hidden" id="inComment" value="" />
+
+          <!-- СОБЫТИЕ -->
+          <section class="bet-form-section">
+            <div class="bet-form-section-title">СОБЫТИЕ</div>
+
+            <div class="bet-form-grid">
+              <label class="field">
+                <span>Дата события *</span>
+                <input id="inDate" type="date" required />
+              </label>
+
+              <label class="field">
+                <span>Вид спорта *</span>
+                <select id="inSport" required>
+                  <option value="Футбол">Футбол</option>
+                  <option value="Хоккей">Хоккей</option>
+                  <option value="Баскетбол">Баскетбол</option>
+                  <option value="Теннис">Теннис</option>
+                  <option value="Киберспорт">Киберспорт</option>
+                  <option value="Другое">Другое</option>
+                </select>
+              </label>
+
+              <label class="field bet-field-wide">
+                <span>Чемпионат / лига</span>
+                <input
+                  id="inLeague"
+                  type="text"
+                  maxlength="60"
+                  list="betLeagueList"
+                  placeholder="Например: Бундеслига, НБА"
+                  autocomplete="off"
+                />
+                <datalist id="betLeagueList"></datalist>
+              </label>
+
+              <div class="bet-teams bet-field-wide">
+                <label class="field">
+                  <span>Команда 1 *</span>
+                  <input
+                    id="inTeamA"
+                    type="text"
+                    required
+                    maxlength="60"
+                    list="betTeamList"
+                    placeholder="Бавария"
+                    autocomplete="off"
+                  />
+                </label>
+
+                <div class="bet-team-separator">—</div>
+
+                <label class="field">
+                  <span>Команда 2 *</span>
+                  <input
+                    id="inTeamB"
+                    type="text"
+                    required
+                    maxlength="60"
+                    list="betTeamList"
+                    placeholder="Дортмунд"
+                    autocomplete="off"
+                  />
+                </label>
+
+                <datalist id="betTeamList"></datalist>
+              </div>
+            </div>
+          </section>
+
+          <!-- СТАВКА -->
+          <section class="bet-form-section">
+            <div class="bet-form-section-title">СТАВКА</div>
+
+            <div class="bet-form-grid">
+              <label class="field">
+                <span>Тип ставки *</span>
+                <select id="inType" required>
+                  <option value="moneyline">П1/X/П2 (исход)</option>
+                  <option value="handicap">Фора</option>
+                  <option value="total">Тотал</option>
+                  <option value="both_to_score">Обе забьют</option>
+                  <option value="correct_score">Точный счёт</option>
+                  <option value="player">Игровая статистика</option>
+                  <option value="combo">Экспресс</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Рынок / выбор *</span>
+                <input
+                  id="inSelection"
+                  type="text"
+                  required
+                  maxlength="120"
+                  placeholder="П1 (Бавария) / ТБ 2.5"
+                />
+              </label>
+
+              <label class="field">
+                <span>Коэффициент *</span>
+                <input
+                  id="inOdds"
+                  type="number"
+                  step="0.01"
+                  min="1.01"
+                  max="1000"
+                  required
+                  placeholder="1.85"
+                />
+              </label>
+
+              <label class="field">
+                <span>Сумма ставки, ₽ *</span>
+                <input
+                  id="inStake"
+                  type="number"
+                  step="1"
+                  min="1"
+                  required
+                  placeholder="500"
+                />
+                <small class="bet-available" id="stakeAvailable"></small>
+              </label>
+
+              <label class="field">
+                <span>Букмекер</span>
+                <select id="inBookmaker">
+                  <option value="BetBoom" selected>BetBoom</option>
+                  <option value="FonBet">FonBet</option>
+                  <option value="Winline">Winline</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Результат</span>
+                <select id="inStatus">
+                  <option value="pending">Не рассчитана</option>
+                  <option value="won">Выигрыш</option>
+                  <option value="lost">Проигрыш</option>
+                  <option value="push">Возврат</option>
+                  <option value="cashout">Выкуп</option>
+                </select>
+              </label>
+
+              <div class="field bet-field-wide">
+                <span>Размер банка</span>
+                <div class="bet-bank-hint">
+                  <span class="muted" id="bankHint">банк 0 ₽</span>
+                </div>
+              </div>
+
+              <div class="field bet-field-wide">
+                <span>Быстрый размер ставки</span>
+
+                <div class="quick-stakes" id="quickStakes">
+                  <button class="chip" type="button" data-pct="1">1%</button>
+                  <button class="chip" type="button" data-pct="2">2%</button>
+                  <button class="chip" type="button" data-pct="5">5%</button>
+                  <button class="chip" type="button" data-pct="10">10%</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="modal-foot">
+            <button class="btn" type="button" data-close-modal>
+              Отмена
+            </button>
+
+            <button class="btn btn-primary" type="submit">
+              Сохранить
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h3>Настройки и данные</h3>
+          <button
+            class="icon-btn"
+            data-close-modal
+            type="button"
+            aria-label="Закрыть"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <label class="field"
+              ><span>Текущий банк, ₽</span
+              ><input id="setBank" type="number" min="0" step="50"
+            /></label>
+            <label class="field"
+              ><span>Лимит на день, ₽</span
+              ><input id="setDaily" type="number" min="0" step="50"
+            /></label>
+            <label class="field"
+              ><span>Лимит на неделю, ₽</span
+              ><input id="setWeekly" type="number" min="0" step="50"
+            /></label>
+            <label class="field"
+              ><span>Дисциплина: макс. ставок в день</span
+              ><input id="setMaxBets" type="number" min="1" step="1"
+            /></label>
+          </div>
+
+          <div class="section-title">Внешние данные</div>
+          <p class="muted note">
+            Загрузите файл с ставками (CSV, TSV или JSON), чтобы сравнить его с
+            локальной историей. Файл никуда не отправляется: разбор происходит в
+            браузере. При следующем экспорте в файл попадут только ставки,
+            отмеченные как выгруженные.
+          </p>
+          <div class="btn-row">
+            <button class="btn btn-sm" id="extFileBtn" type="button">
+              Загрузить файл…
+            </button>
+            <button class="btn btn-sm" id="extTemplate" type="button">
+              Скачать шаблон CSV
+            </button>
+            <button class="btn btn-sm danger" id="extClear" type="button">
+              Сбросить сравнение
+            </button>
+            <input type="file" id="extFile" hidden accept=".csv,.tsv,.txt,.json" />
+          </div>
+          <div class="form-grid" style="margin-top: 10px">
+            <label class="field"
+              ><span>Разделитель CSV (авто, если пусто)</span
+              ><input
+                id="extDelimiter"
+                type="text"
+                maxlength="1"
+                placeholder="авто"
+            /></label>
+            <label class="field"
+              ><span>Порог совпадения по дате, дней</span
+              ><input id="extDateTol" type="number" min="0" max="30" step="1"
+            /></label>
+          </div>
+          <div id="extStatus" class="muted ext-status">Файл не загружен.</div>
+          <div id="extPreview" class="ext-preview"></div>
+
+          <div class="section-title">Данные</div>
+          <div class="btn-row">
+            <button class="btn btn-sm" id="exportJson" type="button">
+              Экспорт JSON
+            </button>
+            <button class="btn btn-sm" id="exportCsv" type="button">
+              Экспорт CSV
+            </button>
+            <button class="btn btn-sm" id="importJson" type="button">
+              Импорт JSON
+            </button>
+            <input
+              type="file"
+              id="importFile"
+              accept="application/json,.json"
+              hidden
+            />
+            <button class="btn btn-sm btn-danger" id="clearAll" type="button">
+              Удалить всё
+            </button>
+          </div>
+          <p class="hint">
+            Всё хранится только в localStorage вашего браузера — ничего не
+            отправляется на сервер. Делайте экспорт JSON перед очисткой истории
+            или сменой браузера.
+          </p>
+          <p class="foot-note" id="storageInfo"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <footer class="foot">
+      <span>© 2026 KuruBets — дневник ставок.</span>
+      <span class="foot-right">
+        <button class="link" id="settingsBtn" type="button">
+          Настройки и данные
+        </button>
+        <span class="muted">18+ · играйте ответственно</span>
+      </span>
+    </footer>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
