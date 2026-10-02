@@ -358,7 +358,7 @@
           password: password,
           options: {
             emailRedirectTo:
-              'https://maxplayout.github.io/KuruBets/'
+              'https://maxplayyout.github.io/KuruBets/'
           }
         });
 
