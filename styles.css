@@ -2757,3 +2757,57 @@ select {
     align-items: flex-start;
   }
 }
+
+@media (max-width: 560px) {
+
+  .topbar {
+    position: sticky;
+    z-index: 40;
+  }
+
+  .menu-btn {
+    position: relative;
+    z-index: 102;
+  }
+
+  .main-nav {
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: min(290px, 84vw);
+    max-width: 290px;
+
+    padding: 82px 14px 20px;
+
+    z-index: 100;
+
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    transform: translateX(-105%);
+  }
+
+  .main-nav.open {
+    transform: translateX(0);
+  }
+
+  .main-nav a {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 46px;
+
+    padding: 11px 14px;
+    margin: 0;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+    white-space: nowrap;
+  }
+}
