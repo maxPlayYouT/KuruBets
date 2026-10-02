@@ -745,6 +745,7 @@ function changeBank(delta) {
 
   function renderQuickMatches() {
     quickBox = quickBox || el('quickMatchCard');
+     if (!quickBox) return;
     var list = K.state.matches.filter(function (m) { return m.live; }).slice(0, 4);
     if (!list.length) list = K.state.matches.slice(0, 4);
     if (!list.length) {
