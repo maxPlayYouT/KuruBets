@@ -707,6 +707,7 @@ function changeBank(delta) {
 
   function renderLimits() {
     limitsBox = limitsBox || el('limitsBox');
+    if (!limitsBox) return;
     var st = K.state.settings;
     var today = K.dayKey(new Date());
     var weekStart = K.mondayOf(new Date());
@@ -745,7 +746,7 @@ function changeBank(delta) {
 
   function renderQuickMatches() {
     quickBox = quickBox || el('quickMatchCard');
-     if (!quickBox) return;
+    if (!quickBox) return;
     var list = K.state.matches.filter(function (m) { return m.live; }).slice(0, 4);
     if (!list.length) list = K.state.matches.slice(0, 4);
     if (!list.length) {
