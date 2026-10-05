@@ -927,7 +927,13 @@ function changeBank(delta) {
       var cls = p === null ? 'zero' : p > 0 ? 'pos' : p < 0 ? 'neg' : 'zero';
       var badge = 'badge-' + b.status;
       return '<tr data-id="' + b.id + '">' +
-        '<td class="nowrap">' + K.fmtDate(b.date) + '</td>' +
+        '<td class="nowrap">' +
+           K.fmtDate(b.date) +
+           '<span class="sub">' + new Date(b.date).toLocaleTimeString('ru-RU', {
+             hour: '2-digit',
+             minute: '2-digit'
+           }) + '</span>' +
+         '</td>' +
         '<td><span class="strong">' + K.esc(b.match) + '</span>' +
         '<span class="sub">' + K.esc(b.sport) + (b.bookmaker ? ' · ' + K.esc(b.bookmaker) : '') + '</span></td>' +
         '<td>' + K.esc(b.selection) + '<span class="sub">' + K.typeLabel(b.type) + '</span></td>' +
