@@ -167,6 +167,22 @@ var KuruBets = (function () {
 }
   function bankDelta(bet) {
   if (!bet || !isSettled(bet)) return 0;
+
+  var stake = Number(bet.stake) || 0;
+  var odds = Number(bet.odds) || 1;
+
+  if (bet.freebet) {
+    if (bet.status === 'won') {
+      return stake * (odds - 1);
+    }
+
+    if (bet.status === 'cashout') {
+      return Number(bet.cashoutAmount) || 0;
+    }
+
+    return 0;
+  }
+
   return profitOf(bet) || 0;
 }
 
@@ -253,6 +269,7 @@ function changeBank(delta) {
       selection: String(bet.selection || '').slice(0, 120),
       odds: isFinite(odds) && odds >= 1.01 ? odds : 1.01,
       stake: isFinite(stake) && stake > 0 ? stake : 0,
+      freebet: !!bet.freebet,
       status: [
       'pending',
       'won',
@@ -1199,6 +1216,7 @@ function changeBank(delta) {
     el('inSelection').value = data.selection || '';
     el('inOdds').value = data.odds || '';
     el('inStake').value = data.stake || '';
+    el('inFreebet').checked = !!data.freebet;
     el('inDate').value = K.dayKey(data.date || new Date());
     el('inBookmaker').value = data.bookmaker || '';
     el('inStatus').value = data.status || 'pending';
@@ -1237,6 +1255,7 @@ function changeBank(delta) {
       selection: el('inSelection').value.trim(),
       odds: parseFloat(el('inOdds').value),
       stake: parseFloat(el('inStake').value),
+      freebet: el('inFreebet').checked,
       status: el('inStatus').value,
       date: new Date(el('inDate').value + 'T' + (id ? '12:00' : new Date().toTimeString().slice(0, 5)) + ':00').toISOString(),
       bookmaker: el('inBookmaker').value.trim(),
@@ -1268,7 +1287,7 @@ function changeBank(delta) {
     return b.status === 'pending';
   })
   .reduce(function (sum, b) {
-    return sum + (Number(b.stake) || 0);
+    return sum + (b.freebet ? 0 : (Number(b.stake) || 0));
   }, 0);
 
 var availableBank = Math.max(
@@ -1568,7 +1587,7 @@ if (!id && bet.status === 'pending' && bet.stake > availableBank) {
 
   function updateTopBank() {
     var bank = Number(K.state.settings.bank) || 0;
-    var pendingBets = K.state.bets.filter(function (bet) { return bet.status === 'pending'; });
+    var pendingBets = K.state.bets.filter(function (bet) {return bet.status === 'pending' && !bet.freebet;});
     var inPlay = pendingBets.reduce(function (sum, bet) { return sum + (Number(bet.stake) || 0); }, 0);
     var potentialProfit = pendingBets.reduce(function (sum, bet) {
       var stake = Number(bet.stake) || 0;
