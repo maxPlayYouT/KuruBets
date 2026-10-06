@@ -186,7 +186,27 @@
       selectionIndex >= 0 && lines[selectionIndex + 1]
         ? lines[selectionIndex + 1]
         : '';
-
+    
+    const resultNode = [...card.querySelectorAll('span')]
+      .find(node =>
+        /^(Выигрыш|Проигрыш|Возврат|Выкуп)$/i.test(
+          clean(node.textContent)
+        )
+      );
+    
+    const resultText = resultNode
+      ? clean(resultNode.textContent).toLowerCase()
+      : '';
+    
+    const statusMap = {
+      'выигрыш': 'won',
+      'проигрыш': 'lost',
+      'возврат': 'push',
+      'выкуп': 'cashout'
+    };
+    
+    const status = statusMap[resultText] || 'pending';
+    
     let match = '';
 
     const possibleTeams = [...card.querySelectorAll('span, div')]
@@ -231,7 +251,7 @@
       sport: 'Футбол',
       bookmaker: 'BetBoom',
       type: detectType(rawSelection),
-      status: 'pending'
+      status
     };
   }
 
