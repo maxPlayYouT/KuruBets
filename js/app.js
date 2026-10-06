@@ -2695,5 +2695,125 @@ function renderRouteData(route) {
   }
 
   K.bindGoalsUi = bindForm;
+
+      
 })(KuruBets);
 
+/* ============================================================
+   Импорт внешних ставок — BetBoom
+   ============================================================ */
+
+(function (K) {
+
+  function minuteKey(date) {
+    const d = new Date(date);
+
+    if (Number.isNaN(d.getTime())) {
+      return '';
+    }
+
+    return (
+      d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0') + ' ' +
+      String(d.getHours()).padStart(2, '0') + ':' +
+      String(d.getMinutes()).padStart(2, '0')
+    );
+  }
+
+  function betKey(bet) {
+    return [
+      String(bet.bookmaker || '').toLowerCase(),
+      String(bet.match || '').trim().toLowerCase(),
+      String(bet.selection || '').trim().toLowerCase(),
+      Number(bet.odds || 0).toFixed(2),
+      Number(bet.stake || 0).toFixed(2),
+      minuteKey(bet.date)
+    ].join('|');
+  }
+
+  function normalizeImportedBet(source) {
+    return K.normalizeBet({
+      match: source.match,
+      sport: source.sport || 'Футбол',
+      league: '',
+      type: source.type || 'moneyline',
+      selection: source.selection,
+      odds: source.odds,
+      stake: source.stake,
+      freebet: false,
+      status: 'pending',
+      cashoutAmount: 0,
+      date: source.date || new Date().toISOString(),
+      bookmaker: source.bookmaker || 'BetBoom',
+      comment: source.market
+        ? 'Рынок: ' + source.market
+        : 'Импортировано из BetBoom',
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  K.importExternalBets = function (items) {
+    if (!Array.isArray(items)) {
+      return {
+        added: 0,
+        skipped: 0
+      };
+    }
+
+    const existing = new Set(
+      K.state.bets.map(betKey)
+    );
+
+    let added = 0;
+    let skipped = 0;
+
+    items.forEach(source => {
+      if (!source || !source.match) {
+        return;
+      }
+
+      const bet =
+        normalizeImportedBet(source);
+
+      const key = betKey(bet);
+
+      if (existing.has(key)) {
+        skipped += 1;
+        return;
+      }
+
+      existing.add(key);
+
+      K.state.bets.push(bet);
+
+      added += 1;
+    });
+
+    if (added) {
+
+      K.state.bets.sort(
+        (a, b) =>
+          new Date(b.date) -
+          new Date(a.date)
+      );
+
+      K.save();
+
+      if (
+        window.KuruApp &&
+        typeof window.KuruApp.rerender ===
+          'function'
+      ) {
+        window.KuruApp.rerender();
+      }
+    }
+
+    return {
+      added,
+      skipped,
+      total: items.length
+    };
+  };
+
+})(window.KuruBets);
