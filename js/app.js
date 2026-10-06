@@ -2742,7 +2742,7 @@ function renderRouteData(route) {
       odds: source.odds,
       stake: source.stake,
       freebet: false,
-      status: 'pending',
+      status: source.status || 'pending',
       cashoutAmount: 0,
       date: source.date || new Date().toISOString(),
       bookmaker: source.bookmaker || 'BetBoom',
