@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "KuruBets — BetBoom Import",
+  "version": "0.1.0",
+  "description": "Тестовый импорт ставок BetBoom в KuruBets",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://betboom.ru/*",
+        "https://*.betboom.ru/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
