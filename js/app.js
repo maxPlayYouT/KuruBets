@@ -287,7 +287,7 @@ function changeBank(delta) {
       date: bet.date || new Date().toISOString(),
       bookmaker: String(bet.bookmaker || '').slice(0, 40),
       comment: String(bet.comment || '').slice(0, 400),
-      createdAt: bet.createdAt || new Date().toISOString()
+      createdAt: bet.createdAt || new Date().toISOString(),
        legs: Array.isArray(bet.legs)
   ? bet.legs.map(function (leg) {
       return {
@@ -1701,7 +1701,7 @@ function saveExpress(event) {
 
   K.save();
 
-  modal = el('expressModal');
+  var modal = el('expressModal');
 
   if (modal) {
     modal.classList.remove('open');
@@ -2276,39 +2276,6 @@ if (expressLegsBox) {
     }
   );
 }
-     
-   var expressBtn = el('addExpressBtn');
-   
-   if (expressBtn) {
-     expressBtn.addEventListener('click', function () {
-   
-       K.openBetModal(null, {
-         type: 'combo',
-         selection: '',
-         odds: '',
-         stake: ''
-       });
-   
-       var type = el('inType');
-   
-       if (type) {
-         type.value = 'combo';
-       }
-   
-       var title = el('betModalTitle');
-   
-       if (title) {
-         title.textContent = 'Новый экспресс';
-       }
-   
-       var selection = el('inSelection');
-   
-       if (selection) {
-         selection.placeholder =
-           'Например: П1 + ТБ 2.5 + Обе забьют';
-       }
-     });
-   }
 
     document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
       btn.addEventListener('click', function () {
