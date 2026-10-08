@@ -1673,10 +1673,48 @@ function renderRouteData(route) {
       toast('Тема: ' + (K.state.settings.theme === 'dark' ? 'тёмная' : 'светлая'));
     });
 
-    [ 'addBetBtn', 'addBetBtn2' ].forEach(function (id) {
-      var node = el(id);
-      if (node) node.addEventListener('click', function () { K.openBetModal(null); });
-    });
+   [ 'addBetBtn', 'addBetBtn2' ].forEach(function (id) {
+     var node = el(id);
+   
+     if (node) {
+       node.addEventListener('click', function () {
+         K.openBetModal(null);
+       });
+     }
+   });
+   
+   var expressBtn = el('addExpressBtn');
+   
+   if (expressBtn) {
+     expressBtn.addEventListener('click', function () {
+   
+       K.openBetModal(null, {
+         type: 'combo',
+         selection: '',
+         odds: '',
+         stake: ''
+       });
+   
+       var type = el('inType');
+   
+       if (type) {
+         type.value = 'combo';
+       }
+   
+       var title = el('betModalTitle');
+   
+       if (title) {
+         title.textContent = 'Новый экспресс';
+       }
+   
+       var selection = el('inSelection');
+   
+       if (selection) {
+         selection.placeholder =
+           'Например: П1 + ТБ 2.5 + Обе забьют';
+       }
+     });
+   }
 
     document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
       btn.addEventListener('click', function () {
