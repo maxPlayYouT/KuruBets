@@ -288,6 +288,18 @@ function changeBank(delta) {
       bookmaker: String(bet.bookmaker || '').slice(0, 40),
       comment: String(bet.comment || '').slice(0, 400),
       createdAt: bet.createdAt || new Date().toISOString()
+       legs: Array.isArray(bet.legs)
+  ? bet.legs.map(function (leg) {
+      return {
+        sport: String(leg.sport || 'Футбол').slice(0, 40),
+        league: String(leg.league || '').slice(0, 60),
+        teamA: String(leg.teamA || '').slice(0, 60),
+        teamB: String(leg.teamB || '').slice(0, 60),
+        selection: String(leg.selection || '').slice(0, 120),
+        odds: Number(leg.odds) || 1.01
+      };
+    })
+  : []
     };
   }
 
@@ -984,7 +996,22 @@ function changeBank(delta) {
     }).join('');
 
     body.querySelectorAll('[data-edit]').forEach(function (btn) {
-      btn.addEventListener('click', function () { openBetModal(btn.dataset.edit); });
+      btn.addEventListener('click', function () {
+
+  var bet = find(btn.dataset.edit);
+
+  if (
+    bet &&
+    bet.type === 'combo' &&
+    Array.isArray(bet.legs) &&
+    bet.legs.length
+  ) {
+    openExpressModal(bet.id);
+    return;
+  }
+
+  openBetModal(btn.dataset.edit);
+});
     });
     body.querySelectorAll('[data-del]').forEach(function (btn) {
       btn.addEventListener('click', function () { removeBet(btn.dataset.del); });
@@ -1199,6 +1226,490 @@ function changeBank(delta) {
     select.value = current || 'Футбол';
   }
 
+var expressLegs = [];
+var expressEditingId = '';
+
+function expressSports() {
+  return [
+    'Футбол',
+    'Хоккей',
+    'Баскетбол',
+    'Теннис',
+    'Киберспорт',
+    'Другое'
+  ];
+}
+
+function expressPlural(n) {
+  if (n === 1) return 'исход';
+  if (n >= 2 && n <= 4) return 'исхода';
+  return 'исходов';
+}
+
+function expressType(selection) {
+  var text = String(selection || '').toLowerCase();
+
+  if (
+    text.indexOf('тб') === 0 ||
+    text.indexOf('тм') === 0 ||
+    text.indexOf('тотал') === 0
+  ) {
+    return 'total';
+  }
+
+  if (text.indexOf('фора') === 0) {
+    return 'handicap';
+  }
+
+  if (text.indexOf('обе') === 0) {
+    return 'both_to_score';
+  }
+
+  if (text.indexOf('точный') === 0) {
+    return 'correct_score';
+  }
+
+  return 'moneyline';
+}
+
+function expressDefaultLeg() {
+  return {
+    sport: 'Футбол',
+    league: '',
+    teamA: '',
+    teamB: '',
+    selection: '',
+    odds: ''
+  };
+}
+
+function readExpressLegs() {
+  var wrap = el('expressLegs');
+
+  if (!wrap) return;
+
+  var cards = wrap.querySelectorAll('[data-express-leg]');
+
+  expressLegs = Array.prototype.map.call(
+    cards,
+    function (card) {
+      return {
+        sport: card.querySelector('[data-field="sport"]').value,
+        league: card.querySelector('[data-field="league"]').value.trim(),
+        teamA: card.querySelector('[data-field="teamA"]').value.trim(),
+        teamB: card.querySelector('[data-field="teamB"]').value.trim(),
+        selection: card.querySelector('[data-field="selection"]').value.trim(),
+        odds: card.querySelector('[data-field="odds"]').value
+      };
+    }
+  );
+}
+
+function renderExpressLegs() {
+  var wrap = el('expressLegs');
+
+  if (!wrap) return;
+
+  wrap.innerHTML = expressLegs.map(function (leg, index) {
+
+    var sportOptions = expressSports()
+      .map(function (sport) {
+        return '<option value="' + K.esc(sport) + '"' +
+          (leg.sport === sport ? ' selected' : '') +
+          '>' +
+          K.esc(sport) +
+          '</option>';
+      })
+      .join('');
+
+    return (
+      '<div class="express-leg" data-express-leg="' + index + '">' +
+
+        '<div class="express-leg-head">' +
+          '<strong>ИСХОД ' + (index + 1) + '</strong>' +
+
+          (
+            index > 1
+              ? '<button class="mini-btn danger" type="button" data-remove-express-leg="' +
+                index +
+                '">✕</button>'
+              : ''
+          ) +
+        '</div>' +
+
+        '<div class="express-leg-grid">' +
+
+          '<label class="field">' +
+            '<span>Вид спорта</span>' +
+            '<select data-field="sport">' +
+              sportOptions +
+            '</select>' +
+          '</label>' +
+
+          '<label class="field">' +
+            '<span>Лига</span>' +
+            '<input data-field="league" type="text" list="betLeagueList" value="' +
+              K.esc(leg.league) +
+              '" placeholder="АПЛ, Ла Лига...">' +
+          '</label>' +
+
+          '<label class="field">' +
+            '<span>Команда 1 / Участник</span>' +
+            '<input data-field="teamA" type="text" list="betTeamList" value="' +
+              K.esc(leg.teamA) +
+              '" placeholder="Арсенал">' +
+          '</label>' +
+
+          '<label class="field">' +
+            '<span>Команда 2 / Участник</span>' +
+            '<input data-field="teamB" type="text" list="betTeamList" value="' +
+              K.esc(leg.teamB) +
+              '" placeholder="Челси">' +
+          '</label>' +
+
+          '<label class="field">' +
+            '<span>Тип ставки / выбор</span>' +
+            '<input data-field="selection" type="text" value="' +
+              K.esc(leg.selection) +
+              '" placeholder="ТБ 2.5 / П1 / Обе забьют">' +
+          '</label>' +
+
+          '<label class="field">' +
+            '<span>Коэффициент *</span>' +
+            '<input data-field="odds" type="number" min="1.01" step="0.01" inputmode="decimal" value="' +
+              K.esc(leg.odds) +
+              '" placeholder="1.85">' +
+          '</label>' +
+
+        '</div>' +
+
+      '</div>'
+    );
+
+  }).join('');
+
+  updateExpressTotals();
+}
+
+function updateExpressTotals() {
+  var totalOdds = 1;
+  var validCount = 0;
+
+  expressLegs.forEach(function (leg) {
+    var odds = parseFloat(
+      String(leg.odds || '').replace(',', '.')
+    );
+
+    if (isFinite(odds) && odds >= 1.01) {
+      totalOdds *= odds;
+      validCount++;
+    }
+  });
+
+  var totalOddsEl = el('expressTotalOdds');
+  var stakeEl = el('expressStake');
+  var summaryStakeEl = el('expressSummaryStake');
+  var winEl = el('expressPossibleWin');
+
+  if (!totalOddsEl) return;
+
+  if (
+    validCount !== expressLegs.length ||
+    expressLegs.length < 2
+  ) {
+    totalOddsEl.textContent = '—';
+    if (summaryStakeEl) summaryStakeEl.textContent = K.money(Number(stakeEl ? stakeEl.value : 0) || 0);
+    if (winEl) winEl.textContent = '—';
+    return;
+  }
+
+  totalOddsEl.textContent = totalOdds.toFixed(2);
+
+  var stake = Number(
+    stakeEl ? stakeEl.value : 0
+  ) || 0;
+
+  if (summaryStakeEl) {
+    summaryStakeEl.textContent = K.money(stake);
+  }
+
+  if (winEl) {
+    winEl.textContent = K.money(stake * totalOdds);
+  }
+}
+
+function openExpressModal(id) {
+  var modal = el('expressModal');
+  var form = el('expressForm');
+
+  if (!modal || !form) return;
+
+  var bet = id ? find(id) : null;
+
+  expressEditingId = id || '';
+
+  el('expressId').value = id || '';
+
+  el('expressModalTitle').textContent =
+    bet ? 'Редактирование экспресса' : 'Новый экспресс';
+
+  el('expressDate').value =
+    bet
+      ? K.dayKey(bet.date)
+      : K.dayKey(new Date());
+
+  el('expressStake').value =
+    bet ? bet.stake : '';
+
+  el('expressBookmaker').value =
+    bet && bet.bookmaker
+      ? bet.bookmaker
+      : 'BetBoom';
+
+  el('expressFreebet').checked =
+    bet ? !!bet.freebet : false;
+
+  if (bet && Array.isArray(bet.legs) && bet.legs.length) {
+    expressLegs = bet.legs.map(function (leg) {
+      return {
+        sport: leg.sport || 'Футбол',
+        league: leg.league || '',
+        teamA: leg.teamA || '',
+        teamB: leg.teamB || '',
+        selection: leg.selection || '',
+        odds: leg.odds || ''
+      };
+    });
+  } else {
+    expressLegs = [
+      expressDefaultLeg(),
+      expressDefaultLeg()
+    ];
+  }
+
+  fillBetTeamList();
+  fillBetLeagueList();
+
+  renderExpressLegs();
+
+  var available = Math.max(
+    0,
+    Number(K.state.settings.bank) || 0
+  );
+
+  var availableEl = el('expressStakeAvailable');
+
+  if (availableEl) {
+    availableEl.textContent =
+      'Доступно: ' + K.money(available);
+  }
+
+  modal.classList.add('open');
+}
+
+function saveExpress(event) {
+  event.preventDefault();
+
+  readExpressLegs();
+
+  var id = expressEditingId;
+  var oldBet = id ? find(id) : null;
+
+  var dateValue =
+    el('expressDate').value ||
+    K.dayKey(new Date());
+
+  var stake = Number(
+    el('expressStake').value
+  ) || 0;
+
+  var bookmaker =
+    el('expressBookmaker').value || 'BetBoom';
+
+  var freebet =
+    !!el('expressFreebet').checked;
+
+  if (expressLegs.length < 2) {
+    return window.KuruApp.toast(
+      'В экспрессе должно быть минимум 2 исхода',
+      'err'
+    );
+  }
+
+  if (!(stake > 0)) {
+    return window.KuruApp.toast(
+      'Укажите сумму ставки',
+      'err'
+    );
+  }
+
+  var invalidLeg = expressLegs.some(function (leg) {
+    var odds = parseFloat(
+      String(leg.odds || '').replace(',', '.')
+    );
+
+    return (
+      !leg.teamA ||
+      !leg.selection ||
+      !(odds >= 1.01)
+    );
+  });
+
+  if (invalidLeg) {
+    return window.KuruApp.toast(
+      'Заполните команды, выбор и коэффициенты всех исходов',
+      'err'
+    );
+  }
+
+  var inPlay = K.state.bets
+    .filter(function (bet) {
+      return bet.status === 'pending';
+    })
+    .reduce(function (sum, bet) {
+      return sum +
+        (
+          bet.freebet
+            ? 0
+            : Number(bet.stake) || 0
+        );
+    }, 0);
+
+  var availableBank =
+    Math.max(
+      0,
+      (Number(K.state.settings.bank) || 0) -
+      inPlay
+    );
+
+  if (
+    !id &&
+    !freebet &&
+    stake > availableBank
+  ) {
+    return window.KuruApp.toast(
+      'Недостаточно свободного банка. Доступно: ' +
+      K.money(availableBank),
+      'err'
+    );
+  }
+
+  var totalOdds = expressLegs.reduce(
+    function (total, leg) {
+      return total *
+        parseFloat(
+          String(leg.odds).replace(',', '.')
+        );
+    },
+    1
+  );
+
+  var matchSummary =
+    'Экспресс · ' +
+    expressLegs.length +
+    ' ' +
+    expressPlural(expressLegs.length);
+
+  var selectionSummary =
+    expressLegs.map(function (leg, index) {
+      var teams = leg.teamA +
+        (
+          leg.teamB
+            ? ' — ' + leg.teamB
+            : ''
+        );
+
+      return (
+        (index + 1) +
+        '. ' +
+        teams +
+        ': ' +
+        leg.selection
+      );
+    }).join(' + ');
+
+  var now = new Date();
+
+  var time =
+    id
+      ? '12:00'
+      : now.toTimeString().slice(0, 5);
+
+  var bet = K.normalizeBet({
+    id: id || K.uid(),
+    match: matchSummary,
+    sport: 'Другое',
+    league: '',
+    type: 'combo',
+    selection: selectionSummary,
+    odds: totalOdds,
+    stake: stake,
+    freebet: freebet,
+    status: oldBet ? oldBet.status : 'pending',
+    date: new Date(
+      dateValue + 'T' + time + ':00'
+    ).toISOString(),
+    bookmaker: bookmaker,
+    comment: 'Экспресс: ' +
+      expressLegs.length +
+      ' исходов',
+    legs: expressLegs,
+    createdAt:
+      oldBet && oldBet.createdAt
+        ? oldBet.createdAt
+        : new Date().toISOString()
+  });
+
+  if (id && oldBet) {
+
+    var oldBankDelta =
+      K.bankDelta(oldBet);
+
+    var newBankDelta =
+      K.bankDelta(bet);
+
+    K.changeBank(
+      newBankDelta - oldBankDelta
+    );
+
+    K.state.bets =
+      K.state.bets.map(function (item) {
+        return item.id === id
+          ? bet
+          : item;
+      });
+
+    window.KuruApp.toast(
+      'Экспресс обновлён',
+      'ok'
+    );
+
+  } else {
+
+    K.state.bets.push(bet);
+
+    window.KuruApp.toast(
+      'Экспресс добавлен',
+      'ok'
+    );
+  }
+
+  K.state.bets.sort(function (a, b) {
+    return new Date(b.date) -
+      new Date(a.date);
+  });
+
+  K.save();
+
+  modal = el('expressModal');
+
+  if (modal) {
+    modal.classList.remove('open');
+  }
+
+  window.KuruApp.rerender();
+}
+   
   function openBetModal(id, preset) {
     var modal = el('betModal');
     var form = el('betForm');
@@ -1365,6 +1876,7 @@ if (!id && bet.status === 'pending' && bet.stake > availableBank) {
 
   K.renderBets = renderBets;
   K.openBetModal = openBetModal;
+  K.openExpressModal = openExpressModal;
   K.bindBetUi = bind;
   K.renderFilterSports = renderFilterSports;
 })(KuruBets);
@@ -1675,14 +2187,96 @@ function renderRouteData(route) {
 
    [ 'addBetBtn', 'addBetBtn2' ].forEach(function (id) {
      var node = el(id);
-   
      if (node) {
        node.addEventListener('click', function () {
          K.openBetModal(null);
        });
      }
    });
-   
+
+var expressBtn = el('addExpressBtn');
+
+if (expressBtn) {
+  expressBtn.addEventListener(
+    'click',
+    function () {
+      openExpressModal(null);
+    }
+  );
+}
+
+var expressForm = el('expressForm');
+
+if (expressForm) {
+
+  expressForm.addEventListener(
+    'input',
+    function () {
+      readExpressLegs();
+      updateExpressTotals();
+    }
+  );
+
+  expressForm.addEventListener(
+    'change',
+    function () {
+      readExpressLegs();
+      updateExpressTotals();
+    }
+  );
+
+  expressForm.addEventListener(
+    'submit',
+    saveExpress
+  );
+}
+
+var addExpressLeg = el('expressAddLeg');
+
+if (addExpressLeg) {
+  addExpressLeg.addEventListener(
+    'click',
+    function () {
+
+      readExpressLegs();
+
+      expressLegs.push(
+        expressDefaultLeg()
+      );
+
+      renderExpressLegs();
+    }
+  );
+}
+
+var expressLegsBox = el('expressLegs');
+
+if (expressLegsBox) {
+  expressLegsBox.addEventListener(
+    'click',
+    function (event) {
+
+      var btn =
+        event.target.closest(
+          '[data-remove-express-leg]'
+        );
+
+      if (!btn) return;
+
+      readExpressLegs();
+
+      var index =
+        Number(
+          btn.dataset.removeExpressLeg
+        );
+
+      expressLegs.splice(index, 1);
+
+      renderExpressLegs();
+    }
+  );
+}
+     
    var expressBtn = el('addExpressBtn');
    
    if (expressBtn) {
