@@ -6471,3 +6471,143 @@ select {
     width: 100%;
   }
 }
+
+/* ============================================================
+   Конструктор экспресса
+   ============================================================ */
+
+.express-btn {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.express-btn:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.express-modal-card {
+  max-width: 760px;
+}
+
+.express-leg {
+  padding: 14px;
+  margin-bottom: 10px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.express-leg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.express-leg-head strong {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+
+.express-leg-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.express-add-leg {
+  width: 100%;
+  min-height: 42px;
+
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+
+  background: transparent;
+  color: var(--text-2);
+
+  cursor: pointer;
+  transition: .16s;
+}
+
+.express-add-leg:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.express-summary {
+  margin-top: 14px;
+  padding: 14px;
+
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.express-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 6px 0;
+
+  color: var(--text-2);
+}
+
+.express-summary-row strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.express-summary-main {
+  margin-top: 5px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.express-summary-main strong {
+  color: var(--green);
+  font-size: 18px;
+}
+
+@media (max-width: 820px) {
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .page-actions .btn {
+    flex: 1 1 0;
+  }
+
+  .express-leg-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .express-modal-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+
+  .page-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .page-actions .btn {
+    width: 100%;
+  }
+
+  .express-leg {
+    padding: 11px;
+  }
+}
