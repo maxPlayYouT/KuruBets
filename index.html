@@ -152,21 +152,21 @@
             <p class="page-sub">История пари, расчёты и фильтры</p>
           </div>
         <div class="page-actions">
-        <button
-          class="btn btn-primary btn-sm"
-          id="addBetBtn2"
-          type="button"
-        >
-          + Добавить ставку
-        </button>
-      
-        <button
-          class="btn btn-sm express-btn"
-          id="addExpressBtn"
-          type="button"
-        >
-          + Создать экспресс
-        </button>
+          <button
+            class="btn btn-primary btn-sm"
+            id="addBetBtn2"
+            type="button"
+          >
+            + Добавить ставку
+          </button>
+
+          <button
+            class="btn btn-sm express-btn"
+            id="addExpressBtn"
+            type="button"
+          >
+            + Создать экспресс
+          </button>
         </div>
         </div>
 
@@ -795,20 +795,20 @@
       </div>
     </div>
     <div class="modal" id="expressModal">
-  <div class="modal-card modal-lg express-modal-card">
+      <div class="modal-card modal-lg express-modal-card">
 
-    <div class="modal-head">
-      <h3 id="expressModalTitle">Новый экспресс</h3>
+        <div class="modal-head">
+          <h3 id="expressModalTitle">Новый экспресс</h3>
 
-      <button
-        class="icon-btn"
-        data-close-modal
-        type="button"
-        aria-label="Закрыть"
-      >
-        ✕
-      </button>
-    </div>
+          <button
+            class="icon-btn"
+            data-close-modal
+            type="button"
+            aria-label="Закрыть"
+            >
+            ✕
+          </button>
+      </div>
 
     <form class="modal-body" id="expressForm">
 
@@ -819,123 +819,123 @@
           ОБЩАЯ ИНФОРМАЦИЯ
         </div>
 
-        <div class="bet-form-grid">
+      <div class="bet-form-grid">
 
-          <label class="field">
-            <span>Дата события *</span>
-            <input
-              id="expressDate"
-              type="date"
-              required
-            >
-          </label>
+        <label class="field">
+          <span>Дата события *</span>
+          <input
+          id="expressDate"
+          type="date"
+          required
+          >
+        </label>
 
-          <label class="field">
-            <span>Сумма ставки, ₽ *</span>
-            <input
-              id="expressStake"
-              type="number"
-              min="1"
-              step="1"
-              placeholder="500"
-              required
-            >
-
-            <small
-              class="bet-available"
-              id="expressStakeAvailable"
-            ></small>
-          </label>
-
-          <label class="field">
-            <span>Букмекер</span>
-
-            <select id="expressBookmaker">
-              <option value="BetBoom">BetBoom</option>
-              <option value="FonBet">FonBet</option>
-              <option value="Winline">Winline</option>
-            </select>
-          </label>
-
-          <label class="field express-freebet-field">
-            <span>Фрибет</span>
-
-            <label class="freebet-toggle">
-              <input
-                id="expressFreebet"
-                type="checkbox"
-              >
-
-              <span>Не списывать из банка</span>
-            </label>
-          </label>
-
-        </div>
-      </section>
-
-
-      <section class="bet-form-section">
-
-        <div class="bet-form-section-title">
-          ИСХОДЫ
-        </div>
-
-        <div id="expressLegs"></div>
-
-        <button
-          class="express-add-leg"
-          id="expressAddLeg"
-          type="button"
+      <label class="field">
+        <span>Сумма ставки, ₽ *</span>
+        <input
+        id="expressStake"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="500"
+        required
         >
-          + Добавить ещё один исход
-        </button>
 
-      </section>
+        <small
+          class="bet-available"
+          id="expressStakeAvailable"
+          ></small>
+      </label>
 
+    <label class="field">
+      <span>Букмекер</span>
 
-      <section class="express-summary">
+      <select id="expressBookmaker">
+        <option value="BetBoom">BetBoom</option>
+        <option value="FonBet">FonBet</option>
+        <option value="Winline">Winline</option>
+      </select>
+    </label>
 
-        <div class="express-summary-row">
-          <span>Общий коэффициент</span>
-          <strong id="expressTotalOdds">—</strong>
-        </div>
+    <label class="field express-freebet-field">
+      <span>Фрибет</span>
 
-        <div class="express-summary-row">
-          <span>Ставка</span>
-          <strong id="expressSummaryStake">0 ₽</strong>
-        </div>
-
-        <div class="express-summary-row express-summary-main">
-          <span>Возможный выигрыш</span>
-          <strong id="expressPossibleWin">0 ₽</strong>
-        </div>
-
-      </section>
-
-
-      <div class="modal-foot">
-
-        <button
-          class="btn"
-          type="button"
-          data-close-modal
+      <label class="freebet-toggle">
+        <input
+        id="expressFreebet"
+        type="checkbox"
         >
-          Отмена
-        </button>
 
-        <button
-          class="btn btn-primary"
-          type="submit"
-        >
-          Сохранить экспресс
-        </button>
+        <span>Не списывать из банка</span>
+      </label>
+    </label>
 
+    </div>
+    </section>
+
+
+    <section class="bet-form-section">
+
+      <div class="bet-form-section-title">
+        ИСХОДЫ
       </div>
+
+    <div id="expressLegs"></div>
+
+    <button
+      class="express-add-leg"
+      id="expressAddLeg"
+      type="button"
+      >
+      + Добавить ещё один исход
+    </button>
+
+    </section>
+
+
+    <section class="express-summary">
+
+      <div class="express-summary-row">
+        <span>Общий коэффициент</span>
+        <strong id="expressTotalOdds">—</strong>
+      </div>
+
+    <div class="express-summary-row">
+      <span>Ставка</span>
+      <strong id="expressSummaryStake">0 ₽</strong>
+    </div>
+
+    <div class="express-summary-row express-summary-main">
+      <span>Возможный выигрыш</span>
+      <strong id="expressPossibleWin">0 ₽</strong>
+    </div>
+
+    </section>
+
+
+    <div class="modal-foot">
+
+      <button
+        class="btn"
+        type="button"
+        data-close-modal
+        >
+        Отмена
+      </button>
+
+    <button
+      class="btn btn-primary"
+      type="submit"
+      >
+      Сохранить экспресс
+    </button>
+
+    </div>
 
     </form>
 
-  </div>
-</div>
+    </div>
+    </div>
     <div class="modal" id="settingsModal">
       <div class="modal-card">
         <div class="modal-head">
