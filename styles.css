@@ -6448,3 +6448,26 @@ select {
     font-size: 17px;
   }
 }
+
+.express-btn {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.express-btn:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+@media (max-width: 560px) {
+  .page-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .page-actions .btn {
+    width: 100%;
+  }
+}
