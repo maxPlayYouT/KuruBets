@@ -72,6 +72,7 @@
       <a href="#/bets" data-route="/bets">Мои ставки</a>
       <a href="#/analytics" data-route="/analytics">Аналитика</a>
       <a href="#/goals" data-route="/goals">Голы 5×5</a>
+      <a href="#/ai-analyst" data-route="/ai-analyst">AI Аналитика</a>
     </nav>
 
     <div class="scrim" id="scrim"></div>
@@ -370,6 +371,45 @@
 
         <div class="section-title">Дисциплина</div>
         <div class="card"><div class="stat-grid" id="disciplineBox"></div></div>
+      </section>
+
+      <!-- ============ AI ANALYST ============ -->
+      <section class="page" data-page="/ai-analyst" id="aiAnalystPage">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">AI Аналитика</h1>
+            <p class="page-sub">Поиск актуальной информации и независимый разбор спортивных матчей</p>
+          </div>
+          <div class="page-actions"><span class="muted" id="aiAnalystStatus">История хранится в этом браузере</span></div>
+        </div>
+
+        <div class="card ai-search-card">
+          <div class="ai-sports" role="group" aria-label="Вид спорта">
+            <button class="ai-sport active" type="button" data-ai-sport="CS2">CS2</button>
+            <button class="ai-sport" type="button" data-ai-sport="Dota 2">Dota 2</button>
+            <button class="ai-sport" type="button" data-ai-sport="Футбол">Футбол</button>
+          </div>
+          <div class="form-grid ai-team-grid">
+            <label class="field"><span>Команда 1</span><input id="aiTeamA" type="text" maxlength="80" placeholder="Например, NAVI" autocomplete="off"></label>
+            <label class="field"><span>Команда 2</span><input id="aiTeamB" type="text" maxlength="80" placeholder="Например, Vitality" autocomplete="off"></label>
+          </div>
+          <div class="form-grid ai-extra-grid">
+            <label class="field"><span>Турнир (необязательно)</span><input id="aiTournament" type="text" maxlength="100" placeholder="Автоматически определить"></label>
+            <label class="field"><span>Дата матча (необязательно)</span><input id="aiMatchDate" type="date"></label>
+          </div>
+          <div class="ai-search-actions">
+            <button class="btn btn-primary" id="aiAnalyzeBtn" type="button">⌕ Найти матч и провести анализ</button>
+            <span class="muted" id="aiSearchHint">По умолчанию ищется ближайший предстоящий матч. Если найдено несколько — уточни турнир или дату.</span>
+          </div>
+          <div class="notice ai-privacy-note">Для поиска нужен вход в KuruBets. Запрос отправляется в защищённую Supabase Edge Function; секретные ключи не хранятся в браузере. Результат — информационный анализ, а не гарантия исхода.</div>
+        </div>
+
+        <div id="aiAnalysisLoading" class="card ai-loading" hidden><span class="ai-spinner"></span><div><strong>Собираем информацию…</strong><p class="muted">Ищем матч, новости, статистику и мнения источников. Это может занять до минуты.</p></div></div>
+        <div id="aiAnalysisError" class="notice warn" hidden></div>
+        <div id="aiAnalysisResult" class="ai-result" hidden></div>
+
+        <div class="section-title">История исследований</div>
+        <div class="card"><div id="aiAnalysisHistory" class="ai-history-empty muted">Пока нет сохранённых анализов.</div></div>
       </section>
 
       <!-- ============ ГОЛЫ 5×5 ============ -->
@@ -1051,5 +1091,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/app.js"></script>
     <script src="js/cloud.js"></script>
+    <script src="js/page-ai-analyst.js"></script>
   </body>
 </html>

@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "KuruBets — BetBoom Import",
+  "version": "0.3.0",
+  "description": "Импорт ставок BetBoom в KuruBets",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://maxplayyout.github.io/KuruBets/*"
+  ],
+  "action": {
+    "default_title": "KuruBets",
+    "default_popup": "popup.html"
+  }
+}
